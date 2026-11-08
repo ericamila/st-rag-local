@@ -25,45 +25,31 @@ Abra o seu terminal e execute os comandos abaixo. *(Nota: O exemplo utiliza a fa
 
 **Baixar o modelo de chat (LLM):**
 ```bash
-ollama pull qwen2.5:0.5b
+ollama pull qwen3.5:0.8b
 ```
 
 **Baixar o modelo de Embeddings:**
 ```bash
-ollama pull qwen:0.5b
+ollama pull qwen3-embedding:0.6b
 ```
-Dica de Hardware: No Windows, verifique a memória dedicada da sua Placa de Vídeo. No Mac (Apple Silicon), a memória é unificada (RAM). Escolha versões do Qwen compatíveis com a sua capacidade (0.5b, 1.5b, 7b, etc).
+Dica de Hardware: No Windows, verifique a memória dedicada da sua Placa de Vídeo. No Mac (Apple Silicon), a memória é unificada (RAM). Escolha versões do Qwen compatíveis com a sua capacidade (0.8b, 2b, 9b, etc).
 
-### 3. Configuração do Código (Python + LangChain)
-Se você possui um script configurado para a OpenAI, instale a integração do Ollama para o LangChain:
+### 3. Configuração
+Os nomes dos modelos, o caminho do PDF e os parâmetros de divisão em blocos ficam nas constantes do topo do `app.py` (`MODELO_LLM`, `MODELO_EMBEDDING`, `CAMINHO_PDF`, `TAMANHO_BLOCO`, ...). Se baixar outros modelos, altere lá.
 
-````bash
-pip install langchain-ollama
-````
-No seu código Python, substitua as chamadas da OpenAI pelas do Ollama:
+Para usar outro documento, substitua o arquivo `base/politica_rh.pdf` (ou aponte `CAMINHO_PDF` para ele).
 
-````python
-# Importações necessárias
-from langchain_ollama import OllamaEmbeddings, ChatOllama
-
-# 1. Configurando os Embeddings Locais
-embeddings = OllamaEmbeddings(
-    model="qwen:0.5b" # Use o nome exato do modelo baixado
-)
-
-# 2. Configurando o Chat (LLM Local)
-chat = ChatOllama(
-    model="qwen2.5:0.5b", # Use o nome exato do modelo baixado
-    reasoning=False       # Desativa o log de raciocínio longo na tela (opcional)
-)
-````
 ### 4. Executando o Projeto
-Este projeto utiliza o Streamlit para a interface gráfica. Para rodar o chat no seu navegador, abra o terminal na pasta do projeto e execute:
+Instale as dependências e rode a interface com o [uv](https://docs.astral.sh/uv/):
 
 ````bash
-streamlit run app.py
+uv sync
+uv run streamlit run app.py
 ````
-(Substitua app.py pelo nome do seu arquivo principal, se for diferente).
+
+Sem o uv, use `pip install -r requirements.txt` e depois `streamlit run app.py`.
+
+Na primeira execução o app indexa o PDF (pode levar alguns segundos); depois o índice fica em cache enquanto o servidor estiver rodando.
 
 Uma nova aba se abrirá automaticamente no seu navegador padrão com a interface do assistente.
 
